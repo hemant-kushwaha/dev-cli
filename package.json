@@ -22,11 +22,18 @@
   },
   "homepage": "https://github.com/hemant-kushwaha/dev-cli#readme",
   "devDependencies": {
+    "@types/figlet": "^1.7.0",
     "@types/node": "^26.6.6",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "commander": "^15.1.0"
+    "boxen": "^9.0.0",
+    "chalk": "^6.0.1",
+    "commander": "^15.1.0",
+    "dotenv": "^18.0.10",
+    "execa": "^10.2.1",
+    "figlet": "^1.13.0",
+    "ora": "^10.0.0"
   }
 }
