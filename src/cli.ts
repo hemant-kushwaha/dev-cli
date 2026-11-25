@@ -7,6 +7,17 @@ import { CliMode, parseCliMode } from "./agent/modes.js";
 import { startChat } from "./commands/chat.js";
 import { wakeUp } from "./commands/wake-up.js";
 
+const TRUST_PROJECT_HELP =
+  "Load this directory's .claude settings, .mcp.json and CLAUDE.md";
+
+function warnTrustProject(): void {
+  console.warn(
+    chalk.yellow(
+      "Warning: --trust-project lets this directory's .claude settings (hooks, permission rules) and .mcp.json run commands on your machine.",
+    ),
+  );
+}
+
 function parseMode(value: string): CliMode {
   const mode = parseCliMode(value);
   if (!mode) {
@@ -40,10 +51,18 @@ export function createCli() {
       .description("Interactive streaming chat session")
       .option("-m, --mode <mode>", "agent | ask | plan", "agent")
       .option("-v, --verbose", "Show agent loop message types", false)
-      .action(async (opts: { mode: string; verbose: boolean }) => {
-        requireApiKey();
-        await startChat({ mode: parseMode(opts.mode), verbose: opts.verbose });
-      });
+      .option("--trust-project", TRUST_PROJECT_HELP, false)
+      .action(
+        async (opts: { mode: string; verbose: boolean; trustProject: boolean }) => {
+          requireApiKey();
+          if (opts.trustProject) warnTrustProject();
+          await startChat({
+            mode: parseMode(opts.mode),
+            verbose: opts.verbose,
+            trustProject: opts.trustProject,
+          });
+        },
+      );
 
   program
     .command("banner")
@@ -75,10 +94,17 @@ export function createCli() {
     .description("Send one shot prompt to the agent")
     .argument("<prompt>", "The prompt to send to the agent")
     .option("-v, --verbose", "Show verbose output")
-    .action(async (prompt: string, opts: { verbose?: boolean }) => {
-      requireApiKey();
-      await runQuery(prompt, { verbose: opts.verbose });
-    });
+    .option("--trust-project", TRUST_PROJECT_HELP, false)
+    .action(
+      async (prompt: string, opts: { verbose?: boolean; trustProject: boolean }) => {
+        requireApiKey();
+        if (opts.trustProject) warnTrustProject();
+        await runQuery(prompt, {
+          verbose: opts.verbose,
+          trustProject: opts.trustProject,
+        });
+      },
+    );
 
   program.action(() => {
     program.help();

@@ -14,6 +14,7 @@ import { startSpinner, stopSpinner } from "../ui/spinner.js";
 export type ChatOptions = {
   mode?: CliMode;
   verbose?: boolean;
+  trustProject?: boolean;
 };
 
 function printSlashHelp(): void {
@@ -101,8 +102,12 @@ function createTurnGate() {
 }
 
 export async function startChat(options: ChatOptions = {}): Promise<void> {
-  const { mode: initialMode = "agent", verbose = false } = options;
-  const session = createSession(initialMode);
+  const {
+    mode: initialMode = "agent",
+    verbose = false,
+    trustProject = false,
+  } = options;
+  const session = createSession(initialMode, { trustProject });
   const turnGate = createTurnGate();
 
   console.log(fmt.mode(`Chat started in ${initialMode} mode`));

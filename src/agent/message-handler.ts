@@ -106,6 +106,9 @@ export function handleMessage(
         );
       } else {
         console.log(fmt.error(`Stopped: ${message.subtype}`));
+        for (const error of message.errors) {
+          console.log(fmt.error(`  ${error}`));
+        }
         console.log(
           fmt.dim(
             `${message.num_turns} turns · $${message.total_cost_usd.toFixed(4)}`,

@@ -1,5 +1,9 @@
 import { query, type Query } from "@anthropic-ai/claude-agent-sdk";
-import { buildModeOptions, type CliMode } from "./modes.js";
+import {
+  buildModeOptions,
+  type CliMode,
+  type SessionOptions,
+} from "./modes.js";
 import { InputQueue } from "./input-queue.js";
 
 export type AgentSession = {
@@ -8,11 +12,14 @@ export type AgentSession = {
   mode: CliMode;
 };
 
-export function createSession(mode: CliMode): AgentSession {
+export function createSession(
+  mode: CliMode,
+  sessionOptions: SessionOptions = {},
+): AgentSession {
   const inputQueue = new InputQueue();
   const agentQuery = query({
     prompt: inputQueue.generator(),
-    options: buildModeOptions(mode),
+    options: buildModeOptions(mode, sessionOptions),
   });
 
   return { query: agentQuery, inputQueue, mode };
