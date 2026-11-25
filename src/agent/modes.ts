@@ -9,10 +9,21 @@ const BLOCKED_WRITE_TOOLS = ["Edit", "Write", "Bash"] as const;
 const BASE_OPTIONS = {
   maxTurns: 25,
   maxBudgetUsd: 1.0,
-  model:'deepseek-v4-1-flash-1017',
+  model: "deepseek-v4-1-flash-1017",
   effort: "medium" as const,
   settingSources: ["project"] as Options["settingSources"],
 };
+
+export function cliModeToPermissionMode(mode: CliMode): PermissionMode {
+  switch (mode) {
+    case "agent":
+      return "acceptEdits";
+    case "ask":
+      return "dontAsk";
+    case "plan":
+      return "plan";
+  }
+}
 
 export function buildModeOptions(mode: CliMode): Options {
   switch (mode) {
